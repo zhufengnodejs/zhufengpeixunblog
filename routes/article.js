@@ -32,4 +32,12 @@ router.post('/add',middleware.checkLogin,upload.single('img'), function (req, re
     });
 });
 
+
+router.get('/detail/:_id', function (req, res) {
+    Model('Article').findOne({_id:req.params._id},function(err,article){
+        article.content = markdown.toHTML(article.content);
+        res.render('article/detail',{title:'查看文章',article:article});
+    });
+});
+
 module.exports = router;
