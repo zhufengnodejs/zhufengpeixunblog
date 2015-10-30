@@ -4,10 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var settings = require('./settings');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var articles = require('./routes/article');
+require('./db');
 var app = express();
 
 // view engine setup
@@ -21,7 +22,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+app.use(session({
+  secret: settings.cookieSecret,//secret 用来防止篡改 cookie
+  key: settings.db,//cookie name cookie 的名字
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
+  resave:true,
+  saveUninitialized:true,
+  store: new MongoStore({
+    db: settings.db,
+    host: settings.host,
+    port: settings.port
+  })
+}));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/articles', articles);
