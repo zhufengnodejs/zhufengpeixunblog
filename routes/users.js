@@ -1,17 +1,18 @@
 var express = require('express');
+var middleware = require('../middleware');
 var router = express.Router();
 
 /**
  * 用户注册
  */
-router.get('/reg', function (req, res) {
+router.get('/reg',middleware.checkNotLogin, function (req, res) {
     res.render('user/reg', {title: '注册'});
 });
 
 /**
  * 当填写用户注册信息提交时的处理
  */
-router.post('/reg', function (req, res) {
+router.post('/reg',middleware.checkNotLogin, function (req, res) {
     var user = req.body;
     if(user.password != user.repassword){
         req.flash('error','两次输入的密码不一致');
@@ -32,14 +33,14 @@ router.post('/reg', function (req, res) {
 /**
  * 显示用户登录表单
  */
-router.get('/login', function (req, res) {
+router.get('/login',middleware.checkNotLogin, function (req, res) {
     res.render('user/login', {title: '登录'});
 });
 
 /**
  * 当填写用户登录信息提交时的处理
  */
-router.post('/login', function (req, res) {
+router.post('/login',middleware.checkNotLogin, function (req, res) {
     var user = req.body;
     user.password = md5(user.password);
     Model('User').findOne(user,function(err,user){
@@ -51,7 +52,7 @@ router.post('/login', function (req, res) {
     });
 });
 
-router.get('/logout', function (req, res) {
+router.get('/logout',middleware.checkLogin, function (req, res) {
     req.session.user = null;//用户信息存入 session
     res.redirect('/');//注册成功后返回主页
 });

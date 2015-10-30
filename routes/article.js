@@ -1,11 +1,12 @@
 var express = require('express');
+var middleware = require('../middleware');
 var router = express.Router();
 
-router.get('/add', function (req, res) {
+router.get('/add',middleware.checkLogin, function (req, res) {
     res.render('article/add', { title: '发表文章' });
 });
 
-router.post('/add', function (req, res) {
+router.post('/add',middleware.checkLogin, function (req, res) {
     req.body.user = req.session.user._id;
     new Model('Article')(req.body).save(function(err,article){
         if(err){
