@@ -18,18 +18,33 @@ router.get('/add',middleware.checkLogin, function (req, res) {
 });
 
 router.post('/add',middleware.checkLogin,upload.single('img'), function (req, res) {
-    req.body.user = req.session.user._id;
     if(req.file){
         req.body.img = path.join('/uploads',req.file.filename);
     }
-    new Model('Article')(req.body).save(function(err,article){
-        if(err){
-            req.flash('error', '更新文章失败!');
-            return res.redirect('/articles/add');
-        }
-        req.flash('success', '更新文章成功!');
-        res.redirect('/');//发表文章成功后返回主页
-    });
+    var _id = req.body._id;
+    if(_id){
+        var set = {title:req.body.title,content:req.body.content};
+        if(req.file)
+            set.img = req.body.img;
+        Model('Article').update({_id:_id},{$set:set},function(err,result){
+            if(err){
+                req.flash('error',err);
+                return res.redirect('back');
+            }
+            req.flash('success', '更新文章成功!');
+            res.redirect('/');//注册成功后返回主页
+        });
+    }else{
+        req.body.user = req.session.user._id;
+        new Model('Article')(req.body).save(function(err,article){
+            if(err){
+                req.flash('error',err);
+                return res.redirect('/articles/add');
+            }
+            req.flash('success', '发表文章成功!');
+            res.redirect('/');//注册成功后返回主页
+        });
+    }
 });
 
 
@@ -37,6 +52,24 @@ router.get('/detail/:_id', function (req, res) {
     Model('Article').findOne({_id:req.params._id},function(err,article){
         article.content = markdown.toHTML(article.content);
         res.render('article/detail',{title:'查看文章',article:article});
+    });
+});
+
+
+router.get('/delete/:_id', function (req, res) {
+    Model('Article').remove({_id:req.params._id},function(err,result){
+        if(err){
+            req.flash('error',err);
+            res.redirect('back');
+        }
+        req.flash('success', '删除文章成功!');
+        res.redirect('/');//注册成功后返回主页
+    });
+});
+
+router.get('/edit/:_id', function (req, res) {
+    Model('Article').findOne({_id:req.params._id},function(err,article){
+        res.render('article/add',{title:'编辑文章',article:article});
     });
 });
 
