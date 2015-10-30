@@ -2,6 +2,7 @@ var express = require('express');
 var middleware = require('../middleware');
 var multer = require('multer');
 var path = require('path');
+var async = require('async');
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, '../public/uploads')
@@ -81,10 +82,19 @@ router.post('/add',middleware.checkLogin,upload.single('img'), function (req, re
 
 
 router.get('/detail/:_id', function (req, res) {
-    Model('Article').findOne({_id:req.params._id}).populate('user').populate('comments.user').exec(function(err,article){
-        console.log(article.comments);
-        article.content = markdown.toHTML(article.content);
-        res.render('article/detail',{title:'查看文章',article:article});
+    async.parallel([function(callback){
+        Model('Article').findOne({_id:req.params._id}).populate('user').populate('comments.user').exec(function(err,article){
+                article.content = markdown.toHTML(article.content);
+                callback(err,article);
+        });
+    },function(callback){
+        Model('Article').update({_id:req.params._id},{$inc:{pv:1}},callback);
+    }],function(err,result){
+        if(err){
+            req.flash('error',err);
+            res.redirect('back');
+        }
+        res.render('article/detail',{title:'查看文章',article:result[0]});
     });
 });
 

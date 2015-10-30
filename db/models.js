@@ -12,6 +12,7 @@ module.exports = {
         title: String,
         content: String,
         img:String,
+        pv: {type:Number,default:0},
         comments: [{user:{type:ObjectId,ref:'User'},content:String,createAt:{type: Date, default: Date.now}}],
         createAt:{type: Date, default: Date.now}
     }
