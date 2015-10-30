@@ -24,6 +24,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+var flash = require('connect-flash');
 app.use(session({
   secret: settings.cookieSecret,//secret 用来防止篡改 cookie
   key: settings.db,//cookie name cookie 的名字
@@ -36,6 +37,15 @@ app.use(session({
     port: settings.port
   })
 }));
+app.use(flash());
+
+app.use(function(req,res,next){
+  res.locals.user = req.session.user;
+  res.locals.success = req.flash('success').toString();
+  res.locals.error = req.flash('error').toString();
+  next();
+});
+
 app.use('/', routes);
 app.use('/users', users);
 app.use('/articles', articles);
