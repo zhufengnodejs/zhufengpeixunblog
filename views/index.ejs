@@ -28,4 +28,15 @@
   %>
  </ul>
 </div>
+<nav>
+ <ul class="pagination">
+  <%
+  for(var i=1;i<=totalPage;i++){
+  %>
+  <li><a href="/articles/list/<%=i%>/<%=pageSize%>?keyword=<%=keyword%>"><%=i%></a></li>
+  <%
+  }
+  %>
+ </ul>
+</nav>
 <% include include/footer.ejs%>

@@ -12,6 +12,7 @@ module.exports = {
         title: String,
         content: String,
         img:String,
+        comments: [],
         createAt:{type: Date, default: Date.now}
     }
 }

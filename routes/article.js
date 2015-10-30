@@ -13,6 +13,37 @@ var storage = multer.diskStorage({
 var upload = multer({ storage:storage})
 var router = express.Router();
 
+router.get('/list/:pageNum/:pageSize',function(req, res, next) {
+    var pageNum = req.params.pageNum&&req.params.pageNum>0?parseInt(req.params.pageNum):1;
+    var pageSize =req.params.pageSize&&req.params.pageSize>0?parseInt(req.params.pageSize):2;
+    var query = {};
+    var searchBtn = req.query.searchBtn;
+    var keyword = req.query.keyword;
+    if(searchBtn){
+        req.session.keyword = keyword;
+    }
+    if(req.session.keyword){
+        query['title'] = new RegExp(req.session.keyword,"i");
+    }
+
+    Model('Article').count(query,function(err,count){
+        Model('Article').find(query).sort({createAt:-1}).skip((pageNum-1)*pageSize).limit(pageSize).populate('user').exec(function(err,articles){
+            articles.forEach(function (article) {
+                article.content = markdown.toHTML(article.content);
+            });
+            res.render('index',{
+                title:'主页',
+                pageNum:pageNum,
+                pageSize:pageSize,
+                keyword:req.session.keyword,
+                totalPage:Math.ceil(count/pageSize),
+                articles:articles
+            });
+        });
+    });
+
+});
+
 router.get('/add',middleware.checkLogin, function (req, res) {
     res.render('article/add', { title: '发表文章' });
 });
