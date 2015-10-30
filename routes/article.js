@@ -47,7 +47,7 @@ router.get('/list/:pageNum/:pageSize',function(req, res, next) {
 });
 
 router.get('/add',middleware.checkLogin, function (req, res) {
-    res.render('article/add', { title: '发表文章' });
+    res.render('article/add', { title: '发表文章',article:{} });
 });
 
 router.post('/add',middleware.checkLogin,upload.single('img'), function (req, res) {
