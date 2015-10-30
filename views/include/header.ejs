@@ -24,10 +24,19 @@
     <!-- 放置其它的导航条 -->
     <div class="collapse navbar-collapse" id="menus">
         <ul class="nav navbar-nav">
+            <%
+            if(!user){
+            %>
             <li class="active"><a href="/users/reg">注册</a></li>
             <li><a href="/users/login">登录</a></li>
+            <%
+            }else{
+            %>
             <li><a href="/articles/add">发表文章</a></li>
             <li><a href="/users/logout">登出</a></li>
+            <%
+            }
+            %>
         </ul>
     </div>
 </nav>
