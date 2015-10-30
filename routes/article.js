@@ -30,6 +30,7 @@ router.get('/list/:pageNum/:pageSize',function(req, res, next) {
         Model('Article').find(query).sort({createAt:-1}).skip((pageNum-1)*pageSize).limit(pageSize).populate('user').exec(function(err,articles){
             articles.forEach(function (article) {
                 article.content = markdown.toHTML(article.content);
+
             });
             res.render('index',{
                 title:'主页',
@@ -80,7 +81,8 @@ router.post('/add',middleware.checkLogin,upload.single('img'), function (req, re
 
 
 router.get('/detail/:_id', function (req, res) {
-    Model('Article').findOne({_id:req.params._id},function(err,article){
+    Model('Article').findOne({_id:req.params._id}).populate('user').populate('comments.user').exec(function(err,article){
+        console.log(article.comments);
         article.content = markdown.toHTML(article.content);
         res.render('article/detail',{title:'查看文章',article:article});
     });
@@ -104,4 +106,16 @@ router.get('/edit/:_id', function (req, res) {
     });
 });
 
+router.post('/comment',middleware.checkLogin, function (req, res) {
+   var user = req.session.user;
+   Model('Article').update({_id:req.body._id},{$push:{comments:{user:user._id,content:req.body.content}}},function(err,result){
+        if(err){
+            req.flash('error',err);
+            return res.redirect('back');
+        }
+        req.flash('success', '评论成功!');
+        res.redirect('back');
+   });
+
+});
 module.exports = router;

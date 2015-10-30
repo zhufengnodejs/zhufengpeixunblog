@@ -12,7 +12,7 @@ module.exports = {
         title: String,
         content: String,
         img:String,
-        comments: [],
+        comments: [{user:{type:ObjectId,ref:'User'},content:String,createAt:{type: Date, default: Date.now}}],
         createAt:{type: Date, default: Date.now}
     }
 }
