@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰博客</title>
+    <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<!--最外面的容器nav标签，并添加nav-bar样式类，表示这里面属于导航条 -->
+<nav class="navbar navbar-default" role="navigation">
+    <!--第二步：增加header-->
+    <div class="navbar-header">
+        <!--最左侧的，默认不可见 按钮标签里嵌套了三个span的icon。然后给与navbar-toggle样式类和属性collapse(收起)，点击的时候目标为data-target。当窗口缩小到一定程度，右侧的效果显现。-->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menus">
+            <span class="sr-only">珠峰博客</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a href="/" class="navbar-brand">珠峰博客</a>
+    </div>
+    <!-- 放置其它的导航条 -->
+    <div class="collapse navbar-collapse" id="menus">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/users/reg">注册</a></li>
+            <li><a href="/users/login">登录</a></li>
+            <li><a href="/articles/add">发表文章</a></li>
+            <li><a href="/users/logout">登出</a></li>
+        </ul>
+    </div>
+</nav>

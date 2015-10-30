@@ -1,1 +1,26 @@
-<%= title %>
+<% include ../include/header.ejs%>
+<div class="container">
+    <form action="/articles/add" method="post"  role="form" class="form-horizontal" enctype="multipart/form-data">
+        <input type="hidden" value="" name="_id"/>
+        <div class="form-group">
+            <label for="title" class="col-sm-2 control-label">标题</label>
+            <div class="col-sm-10">
+                <input type="text" value="" class="form-control" id="title" name="title" placeholder="标题"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="content" class="col-sm-2 control-label">正文</label>
+            <div class="col-sm-10">
+                <textarea class="form-control"   id="" cols="30" rows="10" id="content" name="content" placeholder="请输入内容"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">提交</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+<% include ../include/footer.ejs%>
