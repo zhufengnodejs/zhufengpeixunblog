@@ -29,10 +29,12 @@ router.get('/list/:pageNum/:pageSize',function(req, res, next) {
 
     Model('Article').count(query,function(err,count){
         Model('Article').find(query).sort({createAt:-1}).skip((pageNum-1)*pageSize).limit(pageSize).populate('user').exec(function(err,articles){
-            articles.forEach(function (article) {
-                article.content = markdown.toHTML(article.content);
+            if(articles)
+                articles.forEach(function (article) {
+                    if(article.content)
+                        article.content = markdown.toHTML(article.content);
 
-            });
+                });
             res.render('index',{
                 title:'主页',
                 pageNum:pageNum,
@@ -50,11 +52,12 @@ router.get('/add',middleware.checkLogin, function (req, res) {
     res.render('article/add', { title: '发表文章',article:{} });
 });
 
-router.post('/add',middleware.checkLogin,upload.single('img'), function (req, res) {
+router.post('/add', upload.single('img'),function (req, res) {
     if(req.file){
         req.body.img = path.join('/uploads',req.file.filename);
     }
     var _id = req.body._id;
+
     if(_id){
         var set = {title:req.body.title,content:req.body.content};
         if(req.file)
@@ -69,6 +72,7 @@ router.post('/add',middleware.checkLogin,upload.single('img'), function (req, re
         });
     }else{
         req.body.user = req.session.user._id;
+        delete req.body._id;
         new Model('Article')(req.body).save(function(err,article){
             if(err){
                 req.flash('error',err);
