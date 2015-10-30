@@ -13,6 +13,10 @@
    <div class="media-body">
     <h4 class="media-heading"><a href="/articles/detail/<%=article._id%>"><%=article.title%></a></h4>
     <p class="media-left"><%- article.content%></p>
+    <p class="media-right"></p>
+    <%if(article.img){%>
+    <img src="<%=article.img%>" style="width:100px;height:100px" alt=""/>
+    <%}%>
    </div>
    <div class="media-bottom">
     作者:<%=article.user.username%>

@@ -1,6 +1,6 @@
 <% include ../include/header.ejs%>
 <div class="container">
-    <form action="/articles/add" method="post"  role="form" class="form-horizontal">
+    <form action="/articles/add" method="post"  role="form" class="form-horizontal" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title" class="col-sm-2 control-label">标题</label>
             <div class="col-sm-10">
@@ -11,6 +11,12 @@
             <label for="content" class="col-sm-2 control-label">正文</label>
             <div class="col-sm-10">
                 <textarea class="form-control"   id="" cols="30" rows="10" id="content" name="content" placeholder="请输入内容"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="img" class="col-sm-2 control-label">图片</label>
+            <div class="col-sm-10">
+                <input type="file" class="form-control"  name="img" id="img"/>
             </div>
         </div>
         <div class="form-group">
